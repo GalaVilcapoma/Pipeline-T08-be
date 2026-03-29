@@ -1,0 +1,23 @@
+server:
+  port: ${PORT:8085}
+  url: ${SERVER_URL:http://localhost:8085}
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=CustomerDB;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: Yancarlos1@   # 🔥 AQUÍ ESTABA EL ERROR
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

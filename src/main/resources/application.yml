@@ -1,18 +1,21 @@
 server:
   port: ${PORT:8085}
-  url: ${SERVER_URL:http://localhost:8085}
+  address: 0.0.0.0
 
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=CustomerDB;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://localhost:1433;databaseName=CustomerDB;encrypt=false
     username: sa
-    password: Yancarlos1@   # 🔥 AQUÍ ESTABA EL ERROR
+    password: Gala123$
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
 
 springdoc:
   api-docs:

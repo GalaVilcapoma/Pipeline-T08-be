@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-   
+    // Buscar por estado activo (true/false)
     List<Customer> findByActive(Boolean active);
     
 }

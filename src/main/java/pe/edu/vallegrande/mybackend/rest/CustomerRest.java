@@ -3,7 +3,6 @@ package pe.edu.vallegrande.mybackend.rest;
 import pe.edu.vallegrande.mybackend.model.Customer;
 import pe.edu.vallegrande.mybackend.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,13 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")          // ✅ Permitir Conexión con Angular
 @RestController
-@RequestMapping("/v1/api/customer")  // ✅ http://localhost:8085/v1/api/customer
+@RequestMapping("/v1/api/customer")
 @Tag(name = "Customer API", description = "API for Customer management")
 public class CustomerRest {
 
-    // ✅ Inyección del service
     private final CustomerService customerService;
 
     @Autowired
@@ -31,53 +28,53 @@ public class CustomerRest {
         this.customerService = customerService;
     }
     
-    // 🌐🔍 Mapear Endpoint Listar Todos - tipo GET en POSTMAN
+    // 🌐🔍 Listar Todos - GET
     @GetMapping
     @Operation(summary = "Get All Customer", description = "Get All Customer")
-    public List <Customer> findAll(){
+    public List<Customer> findAll() {
         return customerService.findAll();
     }
 
-    // 🌐🔍 Mapear Endpoint Listar por Estado Activo - tipo GET en POSTMAN
+    // 🌐🔍 Listar por Estado Activo - GET
     @GetMapping("/activo/{activo}")
     @Operation(summary = "Get Customer By Active Status", description = "Get Customer By Active Status")
     public List<Customer> findByActive(@PathVariable("activo") Boolean active) {
         return customerService.findByActive(active);
     }
 
-    // 🌐🔍 Mapear Endpoint Listar por ID - tipo GET en POSTMAN
-    @GetMapping("/{id}")
-    @Operation(summary = "Get Customer By ID", description = "Get Customer By ID")
-    public Optional<Customer> findById(@PathVariable Long id) {
-        return customerService.findById(id);
-    }
-
-    // 🌐✅ Mapear Endpoint Registrar - tipo POST en POSTMAN
-    @PostMapping("/guardar")
-    @Operation(summary = "Save Customer", description = "Ahorrar cliente")
+    // 🌐✅ Registrar - POST
+    @PostMapping("/save")
+    @Operation(summary = "Save Customer", description = "Save Customer")
     public Customer save(@RequestBody Customer customer) {
         return customerService.save(customer);
     }
 
-    // 🌐✏️ Mapear Endpoint Actualizar - tipo PUT en POSTMAN
+    // 🌐✏️ Actualizar - PUT
     @PutMapping("/update/{id}")
     @Operation(summary = "Update Customer", description = "Update Customer")
     public Customer update(@PathVariable Long id, @RequestBody Customer customer) {
         return customerService.update(customer);
     }
 
-    // 🌐❌ Mapear Endpoint Eliminar (Cambio de Estado) por ID - tipo PATCH en POSTMAN
+    // 🌐❌ Eliminar lógico - PATCH
     @PatchMapping("/eliminar/{id}")
     @Operation(summary = "Logical Delete Customer", description = "Eliminar cliente lógico")
     public Customer delete(@PathVariable Long id) {
         return customerService.delete(id);
     }
 
-    // 🌐♻️ Mapear Endpoint Restaurar (Cambio de Estado) por ID - tipo PATCH en POSTMAN
+    // 🌐♻️ Restaurar - PATCH
     @PatchMapping("/restore/{id}")
     @Operation(summary = "Logical Restore Customer", description = "Logical Restore Customer")
     public Customer restore(@PathVariable Long id) {
         return customerService.restore(id);
+    }
+
+    // 🌐🔍 Listar por ID - GET (solo acepta números)
+    @GetMapping("/{id:\\d+}")
+    @Operation(summary = "Get Customer By ID", description = "Get Customer By ID")
+    public Optional<Customer> findById(@PathVariable Long id) {
+        return customerService.findById(id);
     }
 
 }

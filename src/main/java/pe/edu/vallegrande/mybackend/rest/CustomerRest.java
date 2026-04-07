@@ -38,11 +38,11 @@ public class CustomerRest {
         return customerService.findAll();
     }
 
-    // 🌐🔍 Mapear Endpoint Listar por Estado - tipo GET en POSTMAN
-    @GetMapping("/state/{state}")
-    @Operation(summary = "Get Customer By STATE", description = "Get Customer By STATE")
-    public List<Customer> findByState(@PathVariable String state) {
-        return customerService.findByState(state);
+    // 🌐🔍 Mapear Endpoint Listar por Estado Activo - tipo GET en POSTMAN
+    @GetMapping("/active/{active}")
+    @Operation(summary = "Get Customer By Active Status", description = "Get Customer By Active Status")
+    public List<Customer> findByActive(@PathVariable Boolean active) {
+        return customerService.findByActive(active);
     }
 
     // 🌐🔍 Mapear Endpoint Listar por ID - tipo GET en POSTMAN

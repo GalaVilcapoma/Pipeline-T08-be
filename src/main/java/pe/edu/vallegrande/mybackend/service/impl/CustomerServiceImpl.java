@@ -29,11 +29,11 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll();
     }
 
-    // 🛠️🔍 Implementación del método Listar por Estado
+    // 🛠️🔍 Implementación del método Listar por Estado Activo
     @Override
-    public List<Customer> findByState(String state) {
-        log.info("Listando Datos por Estado: " + state);
-        return customerRepository.findByState(state);
+    public List<Customer> findByActive(Boolean active) {
+        log.info("Listando Datos por Estado Activo: " + active);
+        return customerRepository.findByActive(active);
     }
 
     // 🛠️🔍 Implementación del método Listar por ID
@@ -47,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer save(Customer customer) {
         log.info("Registrondo Datos: " + customer.toString());
-        customer.setState("A");
+        customer.setActive(true);
         customer.setCreatedAt(LocalDateTime.now());  // Establecer la fecha de creación al registrar
         return customerRepository.save(customer);
     }
@@ -64,7 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
         // Mantener la fecha de creación original
         customer.setCreatedAt(existing.getCreatedAt());
 
-        customer.setState("A");
+        customer.setActive(true);
         customer.setUpdatedAt(LocalDateTime.now());  // Establecer la fecha de actualización
         return customerRepository.save(customer);
     }
@@ -75,7 +75,7 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Eliminando Datos: " + id);
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        customer.setState("I");
+        customer.setActive(false);
         customer.setDeletedAt(LocalDateTime.now());  // Establecer la fecha de eliminación
         return customerRepository.save(customer);
     }
@@ -86,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Restaurando Datos: " + id);
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        customer.setState("A");
+        customer.setActive(true);
         customer.setRestoredAt(LocalDateTime.now());  // Establecer la fecha de restauración
         return customerRepository.save(customer);
     }

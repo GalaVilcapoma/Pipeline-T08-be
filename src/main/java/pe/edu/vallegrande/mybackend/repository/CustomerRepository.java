@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    // ⚙️🔍 Definir método Listar por Estado
-    List<Customer> findByState(String state);
+    // ⚙️🔍 Definir método Listar por Estado Activo
+    List<Customer> findByActive(Boolean active);
     
 }

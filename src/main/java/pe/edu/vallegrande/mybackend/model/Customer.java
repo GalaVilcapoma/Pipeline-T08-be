@@ -33,8 +33,8 @@ public class Customer {
     @Column(name = "last_name")   // 🗄️ nombre del campo en la base de datos
     private String lastName;      // ☕️ nombre del atributo en la clase java
 
-    @Column(name = "state")       // 🗄️ nombre del campo en la base de datos
-    private String state;         // ☕️ nombre del atributo en la clase java
+    @Column(name = "active")
+    private Boolean active;       // ☕️ nombre del atributo en la clase java
 
     //CAMPOS DE AUDITORIA
 

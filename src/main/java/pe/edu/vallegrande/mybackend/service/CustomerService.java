@@ -9,8 +9,8 @@ public interface CustomerService {
     // ⚙️🔍 Definir método Listar Todos
     List<Customer> findAll();
 
-    // ⚙️🔍 Definir método Listar por Estado
-    List<Customer> findByState(String state);
+    // ⚙️🔍 Definir método Listar por Estado Activo
+    List<Customer> findByActive(Boolean active);
 
     // ⚙️🔍 Definir método Listar por ID
     Optional<Customer> findById(Long id);

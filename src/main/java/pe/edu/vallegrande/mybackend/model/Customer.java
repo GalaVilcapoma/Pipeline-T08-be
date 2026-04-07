@@ -12,42 +12,42 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 
 @Entity
-@Data                      // ✅ genera los getters y setters
-@Table(name = "customer")  // ✅ nombre de la tabla en la base de datos
+@Data                      
+@Table(name = "customer")  
 public class Customer {
 
     @Id
-    @Column(name = "id")          // 🗄️ nombre del campo en la base de datos
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // ✅ para que el id se genere automaticamente
-    private Long id;              // ☕️ nombre del atributo en la clase java
+    @Column(name = "id")          
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;              
 
-    @Column(name = "dni")         // 🗄️ nombre del campo en la base de datos
-    private String dni;           // ☕️ nombre del atributo en la clase java
+    @Column(name = "dni")         
+    private String dni;           
 
-    @Column(name = "cellphone")   // 🗄️ nombre del campo en la base de datos
-    private String cellPhone;     // ☕️ nombre del atributo en la clase java
+    @Column(name = "cellphone")   
+    private String cellPhone;     
 
-    @Column(name = "first_name")  // 🗄️ nombre del campo en la base de datos
-    private String firstName;     // ☕️ nombre del atributo en la clase java
+    @Column(name = "first_name")  
+    private String firstName;     
 
-    @Column(name = "last_name")   // 🗄️ nombre del campo en la base de datos
-    private String lastName;      // ☕️ nombre del atributo en la clase java
+    @Column(name = "last_name")   
+    private String lastName;      
 
     @Column(name = "active")
-    private Boolean active;       // ☕️ nombre del atributo en la clase java
+    private Boolean active;       
 
     //CAMPOS DE AUDITORIA
 
-    @Column(name = "created_at")       // 🗄️ nombre del campo en la base de datos
-    private LocalDateTime createdAt;   // ☕️ nombre del atributo en la clase java
+    @Column(name = "created_at")       
+    private LocalDateTime createdAt;  
 
-    @Column(name = "updated_at")       // 🗄️ nombre del campo en la base de datos
-    private LocalDateTime updatedAt;   // ☕️ nombre del atributo en la clase java
+    @Column(name = "updated_at")      
+    private LocalDateTime updatedAt;   
 
-    @Column(name = "deleted_at")       // 🗄️ nombre del campo en la base de datos
-    private LocalDateTime deletedAt;   // ☕️ nombre del atributo en la clase java
+    @Column(name = "deleted_at")       
+    private LocalDateTime deletedAt;   
 
-    @Column(name = "restored_at")       // 🗄️ nombre del campo en la base de datos
-    private LocalDateTime restoredAt;   // ☕️ nombre del atributo en la clase java
+    @Column(name = "restored_at")      
+    private LocalDateTime restoredAt;  
 
 }

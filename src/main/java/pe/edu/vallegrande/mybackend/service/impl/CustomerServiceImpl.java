@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findByActive(active);
     }
 
-    // 🛠️🔍 Implementación del método Listar por ID
+    
     @Override
     public Optional<Customer> findById(Long id) {
         log.info("Listando Datos por ID: " + id);

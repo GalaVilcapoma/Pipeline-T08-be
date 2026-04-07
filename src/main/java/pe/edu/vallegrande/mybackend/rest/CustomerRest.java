@@ -39,9 +39,9 @@ public class CustomerRest {
     }
 
     // 🌐🔍 Mapear Endpoint Listar por Estado Activo - tipo GET en POSTMAN
-    @GetMapping("/active/{active}")
+    @GetMapping("/activo/{activo}")
     @Operation(summary = "Get Customer By Active Status", description = "Get Customer By Active Status")
-    public List<Customer> findByActive(@PathVariable Boolean active) {
+    public List<Customer> findByActive(@PathVariable("activo") Boolean active) {
         return customerService.findByActive(active);
     }
 
@@ -53,8 +53,8 @@ public class CustomerRest {
     }
 
     // 🌐✅ Mapear Endpoint Registrar - tipo POST en POSTMAN
-    @PostMapping("/save")
-    @Operation(summary = "Save Customer", description = "Save Customer")
+    @PostMapping("/guardar")
+    @Operation(summary = "Save Customer", description = "Ahorrar cliente")
     public Customer save(@RequestBody Customer customer) {
         return customerService.save(customer);
     }
@@ -67,8 +67,8 @@ public class CustomerRest {
     }
 
     // 🌐❌ Mapear Endpoint Eliminar (Cambio de Estado) por ID - tipo PATCH en POSTMAN
-    @PatchMapping("/delete/{id}")
-    @Operation(summary = "Logical Delete Customer", description = "Logical Delete Customer")
+    @PatchMapping("/eliminar/{id}")
+    @Operation(summary = "Logical Delete Customer", description = "Eliminar cliente lógico")
     public Customer delete(@PathVariable Long id) {
         return customerService.delete(id);
     }

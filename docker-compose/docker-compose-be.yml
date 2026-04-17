@@ -28,6 +28,8 @@ services:
       MSSQL_PID: "Express"
     ports:
       - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
     healthcheck:
       test: ["CMD-SHELL", "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog || exit 1"]
       interval: 10s
@@ -39,4 +41,8 @@ services:
 
 networks:
   my-network:
+    name: my-network
     driver: bridge
+
+volumes:
+  sqlserver_data:

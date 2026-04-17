@@ -1,0 +1,27 @@
+# docker-compose -f docker-compose-db.yml up -d
+# docker-compose -f docker-compose-db.yml down
+services:
+  sqlserver:
+    image: anthonygala/sql-server:2022   # cambiar por tu usuario de dockerhub
+    container_name: sql-server
+    restart: unless-stopped
+    environment:
+      SA_PASSWORD: "Admin12345!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    networks:
+      - my-network
+
+# CREAR UNA RED EN ESTE COMPOSE PARA QUE SEA COMPARTIDA
+networks:
+  my-network:
+    name: my-network   # red compartida, visible desde ambos compose
+    driver: bridge

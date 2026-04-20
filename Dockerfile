@@ -12,11 +12,11 @@ COPY --from=builder /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
-# docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Admin12345" -p 1433:1433 --name sqlserver -d anthonygala/sql-server:2022
+# docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Admin12345" -p 1433:1433 --name sqlserver -d alexandraquispe/sql-server:2022
 
 
-# docker build -t anthonygala/springboot-sqlserver:1.0 .
+# docker build -t alexandraquispe/springboot-sqlserver:1.0 .
 
-# docker run -d --name springboot-sqlserver -p 8085:8085 anthonygala/springboot-sqlserver:1.0
+# docker run -d --name springboot-sqlserver -p 8085:8085 alexandraquispe/springboot-sqlserver:1.0
 
-# docker push anthonygala/springboot-sqlserver:1.0
+# docker push alexandraquispe/springboot-sqlserver:1.0

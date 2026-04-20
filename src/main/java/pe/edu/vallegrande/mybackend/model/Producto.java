@@ -13,14 +13,20 @@ public class Producto {
     private Long id;
 
     private String nombre;
+    @Column(name = "nombre_tecnico")
     private String nombreTecnico;
     private Double precio;
     private Integer stock;
     private Boolean estado;
+    @Column(name = "fecha_registro")
     private LocalDate fechaRegistro;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+    @Column(name = "restored_at")
     private LocalDateTime restoredAt;
 
     public Long getId() { return id; }

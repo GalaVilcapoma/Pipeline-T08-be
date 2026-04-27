@@ -16,7 +16,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
 # CONSTRUIR UNA IMAGEN MEDIANTE UN Dockerfile EN UNA CARPETA 
-# docker build -t anthonygala/springboot-sqlserver:1.0 -f dockerfile-anthonygala/Dockerfile .
+# docker build -t anthonygala/springboot-sqlserver:1.0 -f dockerfile-anthony/dockerfile .
 
 
 # EJECUTAR Y SUBIR TU IMAGEN GENERADA A DOCKERHUB
@@ -37,4 +37,4 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
 # EJECUTAR UN CONTENEDOR SQL SERVER MEDIANTE COMANDO
-# docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Admin12345" -p 1433:1433 --name sqlserver -d alexandraquispe/sql-server:2022
+# docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Admin12345" -p 1433:1433 --name sqlserver -d anthonygala/sql-server:2022

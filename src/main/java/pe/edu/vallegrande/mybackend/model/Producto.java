@@ -1,10 +1,16 @@
 package pe.edu.vallegrande.mybackend.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "productos")
 public class Producto {
 
@@ -12,53 +18,59 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "codigo", nullable = false, unique = true, length = 50)
+    private String codigo;
+
+    @Column(name = "nombre", nullable = false, length = 200)
     private String nombre;
-    @Column(name = "nombre_tecnico")
-    private String nombreTecnico;
-    private Double precio;
-    private Integer stock;
-    private Boolean estado;
-    @Column(name = "fecha_registro")
-    private LocalDate fechaRegistro;
-    @Column(name = "created_at")
+
+    @Column(name = "descripcion", length = 500)
+    private String descripcion;
+
+    @Column(name = "categoria", nullable = false, length = 50)
+    private String categoria;
+
+    @Column(name = "unidad_medida", nullable = false, length = 30)
+    private String unidadMedida;
+
+    @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioUnitario;
+
+    @Column(name = "stock_actual", nullable = false)
+    private Integer stockActual = 0;
+
+    @Column(name = "stock_minimo", nullable = false)
+    private Integer stockMinimo = 0;
+
+    @Column(name = "origen", nullable = false, length = 200)
+    private String origen;
+
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = true; // Maps to 'activo' in Angular
+
+    // ── Audit Columns
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
     @Column(name = "restored_at")
     private LocalDateTime restoredAt;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (estado == null) {
+            estado = true;
+        }
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getNombreTecnico() { return nombreTecnico; }
-    public void setNombreTecnico(String nombreTecnico) { this.nombreTecnico = nombreTecnico; }
-
-    public Double getPrecio() { return precio; }
-    public void setPrecio(Double precio) { this.precio = precio; }
-
-    public Integer getStock() { return stock; }
-    public void setStock(Integer stock) { this.stock = stock; }
-
-    public Boolean getEstado() { return estado; }
-    public void setEstado(Boolean estado) { this.estado = estado; }
-
-    public LocalDate getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    public LocalDateTime getDeletedAt() { return deletedAt; }
-    public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
-
-    public LocalDateTime getRestoredAt() { return restoredAt; }
-    public void setRestoredAt(LocalDateTime restoredAt) { this.restoredAt = restoredAt; }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

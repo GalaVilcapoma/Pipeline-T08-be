@@ -1,4 +1,3 @@
-
 # Stage 1: Build with Maven
 
 FROM alexandraquispe/maven:3.9-amazoncorretto-25-alpine AS builder
@@ -11,6 +10,7 @@ RUN mvn clean package -DskipTests
 FROM alexandraquispe/eclipse-temurin:25-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8085
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
 

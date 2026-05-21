@@ -1,53 +1,84 @@
 package pe.edu.vallegrande.mybackend.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-
 @Entity
-@Data                      
-@Table(name = "customer")  
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "customer")
 public class Customer {
 
     @Id
-    @Column(name = "id")          
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  
-    private Long id;              
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "dni")         
-    private String dni;           
+    @Column(name = "codigo", nullable = false, unique = true, length = 50)
+    private String codigo;
 
-    @Column(name = "cellphone")   
-    private String cellPhone;     
+    @Column(name = "razon_social", nullable = false, length = 200)
+    private String razonSocial;
 
-    @Column(name = "first_name")  
-    private String firstName;     
+    @Column(name = "ruc", length = 20)
+    private String ruc;
 
-    @Column(name = "last_name")   
-    private String lastName;      
+    @Column(name = "tipo_documento", nullable = false, length = 30)
+    private String tipoDocumento;
 
-    @Column(name = "active")
-    private Boolean active;       
+    @Column(name = "numero_documento", nullable = false, length = 50)
+    private String numeroDocumento;
 
-    //CAMPOS DE AUDITORIA
+    @Column(name = "pais", nullable = false, length = 100)
+    private String pais;
 
-    @Column(name = "created_at")       
-    private LocalDateTime createdAt;  
+    @Column(name = "ciudad", length = 100)
+    private String ciudad;
 
-    @Column(name = "updated_at")      
-    private LocalDateTime updatedAt;   
+    @Column(name = "direccion", length = 200)
+    private String direccion;
 
-    @Column(name = "deleted_at")       
-    private LocalDateTime deletedAt;   
+    @Column(name = "telefono", length = 30)
+    private String telefono;
 
-    @Column(name = "restored_at")      
-    private LocalDateTime restoredAt;  
+    @Column(name = "email", length = 100)
+    private String email;
 
+    @Column(name = "contacto_principal", length = 150)
+    private String contactoPrincipal;
+
+    @Column(name = "tipo_cliente", nullable = false, length = 30)
+    private String tipoCliente;
+
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
+    // ── Audit Columns
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name = "restored_at")
+    private LocalDateTime restoredAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (active == null) {
+            active = true;
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

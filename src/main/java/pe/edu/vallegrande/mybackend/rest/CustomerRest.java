@@ -1,24 +1,26 @@
 package pe.edu.vallegrande.mybackend.rest;
 
+import pe.edu.vallegrande.mybackend.dto.ApiResponse;
 import pe.edu.vallegrande.mybackend.model.Customer;
 import pe.edu.vallegrande.mybackend.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v1/api/customer")
-@Tag(name = "Customer API", description = "API for Customer management")
+@RequestMapping("/v1/api/clientes")
+@CrossOrigin(origins = "*")
+@Tag(name = "Clientes — Master", description = "API para la gestión del catálogo de clientes")
 public class CustomerRest {
 
     private final CustomerService customerService;
@@ -27,54 +29,93 @@ public class CustomerRest {
     public CustomerRest(CustomerService customerService) {
         this.customerService = customerService;
     }
-    
-    // 🌐🔍 Listar Todos - GET
+
+    // GET /v1/api/clientes — Listar filtrado y paginado
     @GetMapping
-    @Operation(summary = "Get All Customer", description = "Get All Customer")
-    public List<Customer> findAll() {
-        return customerService.findAll();
+    @Operation(summary = "Listar clientes con filtros y paginación")
+    public ResponseEntity<Page<Customer>> findAll(
+            @RequestParam(required = false) String razonSocial,
+            @RequestParam(required = false) String pais,
+            @RequestParam(required = false) String tipoCliente,
+            @RequestParam(required = false) Boolean activo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Customer> result = customerService.findAllConFiltros(razonSocial, pais, tipoCliente, activo, pageable);
+        return ResponseEntity.ok(result);
     }
 
-    // 🌐🔍 Listar por Estado Activo - GET
-    @GetMapping("/activo/{activo}")
-    @Operation(summary = "Get Customer By Active Status", description = "Get Customer By Active Status")
-    public List<Customer> findByActive(@PathVariable("activo") Boolean active) {
-        return customerService.findByActive(active);
+    // GET /v1/api/clientes/{id}
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener cliente por ID")
+    public ResponseEntity<ApiResponse<Customer>> findById(@PathVariable Long id) {
+        return customerService.findById(id)
+                .map(c -> ResponseEntity.ok(new ApiResponse<>(c, "Cliente encontrado", true)))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse<>(null, "Cliente no encontrado con ID: " + id, false)));
     }
 
-    // 🌐✅ Registrar - POST
-    @PostMapping("/save")
-    @Operation(summary = "Save Customer", description = "Save Customer")
-    public Customer save(@RequestBody Customer customer) {
-        return customerService.save(customer);
+    // POST /v1/api/clientes
+    @PostMapping
+    @Operation(summary = "Crear nuevo cliente")
+    public ResponseEntity<ApiResponse<Customer>> save(@RequestBody Customer customer) {
+        Customer creado = customerService.save(customer);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(creado, "Cliente registrado exitosamente", true));
     }
 
-    // 🌐✏️ Actualizar - PUT
-    @PutMapping("/update/{id}")
-    @Operation(summary = "Update Customer", description = "Update Customer")
-    public Customer update(@PathVariable Long id, @RequestBody Customer customer) {
-        return customerService.update(customer);
+    // PUT /v1/api/clientes/{id}
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar cliente existente")
+    public ResponseEntity<ApiResponse<Customer>> update(@PathVariable Long id, @RequestBody Customer customer) {
+        customer.setId(id);
+        Customer editado = customerService.update(customer);
+        return ResponseEntity.ok(new ApiResponse<>(editado, "Cliente actualizado exitosamente", true));
     }
 
-    // 🌐❌ Eliminar lógico - PATCH
-    @PatchMapping("/eliminar/{id}")
-    @Operation(summary = "Logical Delete Customer", description = "Eliminar cliente lógico")
-    public Customer delete(@PathVariable Long id) {
-        return customerService.delete(id);
+    // DELETE /v1/api/clientes/{id} — Eliminar lógico
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar lógicamente un cliente")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        customerService.delete(id);
+        return ResponseEntity.ok(new ApiResponse<>(null, "Cliente eliminado lógicamente", true));
     }
 
-    // 🌐♻️ Restaurar - PATCH
-    @PatchMapping("/restore/{id}")
-    @Operation(summary = "Logical Restore Customer", description = "Logical Restore Customer")
-    public Customer restore(@PathVariable Long id) {
-        return customerService.restore(id);
+    // GET /v1/api/clientes/select — Lista simplificada de selección
+    @GetMapping("/select")
+    @Operation(summary = "Obtener lista simplificada para comboboxes")
+    public ResponseEntity<List<CustomerSelectDto>> getSelectList() {
+        List<CustomerSelectDto> selectList = customerService.findByActive(true).stream()
+                .map(c -> new CustomerSelectDto(c.getId(), c.getRazonSocial()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(selectList);
     }
 
-    // 🌐🔍 Listar por ID - GET (solo acepta números)
-    @GetMapping("/{id:\\d+}")
-    @Operation(summary = "Get Customer By ID", description = "Get Customer By ID")
-    public Optional<Customer> findById(@PathVariable Long id) {
-        return customerService.findById(id);
-    }
+    // Helper DTO class for Select box list
+    public static class CustomerSelectDto {
+        private Long id;
+        private String razonSocial;
 
+        public CustomerSelectDto(Long id, String razonSocial) {
+            this.id = id;
+            this.razonSocial = razonSocial;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getRazonSocial() {
+            return razonSocial;
+        }
+
+        public void setRazonSocial(String razonSocial) {
+            this.razonSocial = razonSocial;
+        }
+    }
 }

@@ -86,6 +86,14 @@ public class ProductoRest {
         return ResponseEntity.ok(new ApiResponse<>(null, "Producto eliminado lógicamente", true));
     }
 
+    // PATCH /v1/api/productos/{id}/restore — Restaurar lógico
+    @PatchMapping("/{id}/restore")
+    @Operation(summary = "Restaurar lógicamente un producto")
+    public ResponseEntity<ApiResponse<Producto>> restaurar(@PathVariable Long id) {
+        Producto restored = productoService.restaurar(id);
+        return ResponseEntity.ok(new ApiResponse<>(restored, "Producto restaurado lógicamente", true));
+    }
+
     // PATCH /v1/api/productos/{id}/toggle-activo — Toggle activo/inactivo
     @PatchMapping("/{id}/toggle-activo")
     @Operation(summary = "Alternar estado activo/inactivo del producto")

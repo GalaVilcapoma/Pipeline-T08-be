@@ -72,10 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCreatedAt(existing.getCreatedAt());
         customer.setDeletedAt(existing.getDeletedAt());
         customer.setRestoredAt(existing.getRestoredAt());
-
-        if (customer.getActive() == null) {
-            customer.setActive(existing.getActive());
-        }
+        customer.setActive(existing.getActive());
         customer.setUpdatedAt(LocalDateTime.now());
         return customerRepository.save(customer);
     }

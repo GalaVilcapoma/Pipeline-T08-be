@@ -48,9 +48,7 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setUpdatedAt(null);
         producto.setDeletedAt(null);
         producto.setRestoredAt(null);
-        if (producto.getEstado() == null) {
-            producto.setEstado(true);
-        }
+        producto.setEstado(true);
         return productoRepository.save(producto);
     }
 
@@ -63,10 +61,7 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setDeletedAt(existing.getDeletedAt());
         producto.setRestoredAt(existing.getRestoredAt());
         producto.setUpdatedAt(LocalDateTime.now());
-
-        if (producto.getEstado() == null) {
-            producto.setEstado(existing.getEstado());
-        }
+        producto.setEstado(existing.getEstado());
 
         return productoRepository.save(producto);
     }
@@ -78,6 +73,7 @@ public class ProductoServiceImpl implements ProductoService {
 
         producto.setEstado(false);
         producto.setDeletedAt(LocalDateTime.now());
+        producto.setRestoredAt(null);
         return productoRepository.save(producto);
     }
 
@@ -87,6 +83,7 @@ public class ProductoServiceImpl implements ProductoService {
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
 
         producto.setEstado(true);
+        producto.setDeletedAt(null);
         producto.setRestoredAt(LocalDateTime.now());
         return productoRepository.save(producto);
     }

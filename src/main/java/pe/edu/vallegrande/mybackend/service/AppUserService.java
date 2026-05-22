@@ -31,9 +31,17 @@ public class AppUserService {
     }
 
     public AppUser update(Long id, AppUser user) {
-        user.setId(id);
-        user.setUpdatedAt(LocalDateTime.now());
-        return repo.save(user);
+        AppUser existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+
+        existing.setUsername(user.getUsername());
+        existing.setPasswordHash(user.getPasswordHash());
+        existing.setFullName(user.getFullName());
+        existing.setEmail(user.getEmail());
+        existing.setRole(user.getRole());
+        existing.setUpdatedAt(LocalDateTime.now());
+
+        return repo.save(existing);
     }
 
     public AppUser toggleActive(Long id) {
@@ -41,7 +49,29 @@ public class AppUserService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + id));
         u.setActive(!u.getActive());
         u.setUpdatedAt(LocalDateTime.now());
-        if (!u.getActive()) u.setDeletedAt(LocalDateTime.now());
+        if (!u.getActive()) {
+            u.setDeletedAt(LocalDateTime.now());
+        } else {
+            u.setRestoredAt(LocalDateTime.now());
+            u.setDeletedAt(null);
+        }
+        return repo.save(u);
+    }
+
+    public AppUser delete(Long id) {
+        AppUser u = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+        u.setActive(false);
+        u.setDeletedAt(LocalDateTime.now());
+        return repo.save(u);
+    }
+
+    public AppUser restore(Long id) {
+        AppUser u = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+        u.setActive(true);
+        u.setRestoredAt(LocalDateTime.now());
+        u.setDeletedAt(null);
         return repo.save(u);
     }
 

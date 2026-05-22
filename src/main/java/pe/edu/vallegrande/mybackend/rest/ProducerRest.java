@@ -62,6 +62,18 @@ public class ProducerRest {
         return ResponseEntity.ok(service.toggleActive(id));
     }
 
+    @PatchMapping("/{id}/delete")
+    @Operation(summary = "Logical delete producer")
+    public ResponseEntity<Producer> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(service.delete(id));
+    }
+
+    @PatchMapping("/{id}/restore")
+    @Operation(summary = "Restore producer")
+    public ResponseEntity<Producer> restore(@PathVariable Long id) {
+        return ResponseEntity.ok(service.restore(id));
+    }
+
     // ── Fields ─────────────────────────────────────────────────────────────
 
     @GetMapping("/{producerId}/fields")

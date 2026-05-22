@@ -6,10 +6,9 @@ import pe.edu.vallegrande.mybackend.model.Agrochemical;
 import pe.edu.vallegrande.mybackend.repository.AgrochemicalRepository;
 import pe.edu.vallegrande.mybackend.service.AgrochemicalService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AgrochemicalServiceImpl implements AgrochemicalService {
@@ -23,8 +22,13 @@ public class AgrochemicalServiceImpl implements AgrochemicalService {
     }
 
     @Override
-    public List<Agrochemical> findByActive(Boolean active) {
-        return agrochemicalRepository.findByActive(active);
+    public List<Agrochemical> findAllActive() {
+        return agrochemicalRepository.findByActiveTrue();
+    }
+
+    @Override
+    public List<Agrochemical> findAllInactive() {
+        return agrochemicalRepository.findByActiveFalse();
     }
 
     @Override
@@ -33,36 +37,57 @@ public class AgrochemicalServiceImpl implements AgrochemicalService {
     }
 
     @Override
-    public Agrochemical save(Agrochemical agrochemical) {
+    public Agrochemical create(Agrochemical agrochemical) {
+        agrochemical.setId(null);
+        agrochemical.setActive(true);
+        agrochemical.setDeletedAt(null);
+        agrochemical.setRestoredAt(null);
         return agrochemicalRepository.save(agrochemical);
     }
 
     @Override
-    public Agrochemical update(Long id, Agrochemical agrochemical) {
-        agrochemical.setId(id);
-        return agrochemicalRepository.save(agrochemical);
-    }
-
-    @Override
-    public Agrochemical updateSenasaStatus(Long id, String status) {
-        Agrochemical agro = agrochemicalRepository.findById(id)
+    public Agrochemical update(Long id, Agrochemical incoming) {
+        Agrochemical existing = agrochemicalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Agrochemical not found: " + id));
-        agro.setSenasaStatus(status);
-        return agrochemicalRepository.save(agro);
+
+        existing.setCommercialName(incoming.getCommercialName());
+        existing.setActiveIngredient(incoming.getActiveIngredient());
+        existing.setCategory(incoming.getCategory());
+        existing.setSenasaRegistrationNumber(incoming.getSenasaRegistrationNumber());
+        existing.setRegistrationExpiry(incoming.getRegistrationExpiry());
+        existing.setMaxDose(incoming.getMaxDose());
+        existing.setWaitingPeriodDays(incoming.getWaitingPeriodDays());
+        existing.setManufacturer(incoming.getManufacturer());
+
+        return agrochemicalRepository.save(existing);
     }
 
     @Override
-    public List<Agrochemical> getActiveForSelection() {
-        return agrochemicalRepository.findByActive(true).stream()
-                .filter(a -> "ACTIVE".equals(a.getSenasaStatus()))
-                .collect(Collectors.toList());
+    public Agrochemical delete(Long id) {
+        Agrochemical agrochemical = agrochemicalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Agrochemical not found: " + id));
+
+        if (!agrochemical.getActive()) {
+            throw new RuntimeException("Agrochemical already inactive: " + id);
+        }
+
+        agrochemical.setActive(false);
+        agrochemical.setDeletedAt(LocalDateTime.now());
+        return agrochemicalRepository.save(agrochemical);
     }
 
     @Override
-    public List<Agrochemical> getExpiringSoon() {
-        LocalDate threshold = LocalDate.now().plusDays(30);
-        return agrochemicalRepository.findByActive(true).stream()
-                .filter(a -> a.getRegistrationExpiry() != null && a.getRegistrationExpiry().isBefore(threshold))
-                .collect(Collectors.toList());
+    public Agrochemical restore(Long id) {
+        Agrochemical agrochemical = agrochemicalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Agrochemical not found: " + id));
+
+        if (agrochemical.getActive()) {
+            throw new RuntimeException("Agrochemical already active: " + id);
+        }
+
+        agrochemical.setActive(true);
+        agrochemical.setRestoredAt(LocalDateTime.now());
+        agrochemical.setDeletedAt(null);
+        return agrochemicalRepository.save(agrochemical);
     }
 }

@@ -82,6 +82,14 @@ public class CustomerRest {
         return ResponseEntity.ok(new ApiResponse<>(null, "Cliente eliminado lógicamente", true));
     }
 
+    // PATCH /v1/api/clientes/{id}/restore — Restaurar lógico
+    @PatchMapping("/{id}/restore")
+    @Operation(summary = "Restaurar lógicamente un cliente")
+    public ResponseEntity<ApiResponse<Customer>> restore(@PathVariable Long id) {
+        Customer restored = customerService.restore(id);
+        return ResponseEntity.ok(new ApiResponse<>(restored, "Cliente restaurado lógicamente", true));
+    }
+
     // GET /v1/api/clientes/select — Lista simplificada de selección
     @GetMapping("/select")
     @Operation(summary = "Obtener lista simplificada para comboboxes")

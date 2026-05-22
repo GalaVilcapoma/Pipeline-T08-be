@@ -57,6 +57,9 @@ public class Producer {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "restored_at")
+    private LocalDateTime restoredAt;
+
     @OneToMany(mappedBy = "producer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Field> fields;
 

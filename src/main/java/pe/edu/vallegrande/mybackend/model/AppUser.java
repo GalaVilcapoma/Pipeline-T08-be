@@ -49,6 +49,9 @@ public class AppUser {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "restored_at")
+    private LocalDateTime restoredAt;
+
     public enum UserRole {
         ROLE_ADMIN,
         ROLE_SUPERVISOR,

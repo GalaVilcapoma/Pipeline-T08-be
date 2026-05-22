@@ -1,13 +1,12 @@
 server:
   port: ${PORT:8085}
-  url: ${SERVER_URL:http://localhost:8085}
 
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:sqlserver://localhost:1433;databaseName=avsa_db;encrypt=false;trustServerCertificate=true}
-    username: ${DATABASE_USERNAME:sa}
-    password: ${DATABASE_PASSWORD:Admin12345!!}
-    driver-class-name: ${DATABASE_DRIVER:com.microsoft.sqlserver.jdbc.SQLServerDriver}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DATABASE_DRIVER}
 
   jpa:
     database-platform: org.hibernate.dialect.SQLServerDialect

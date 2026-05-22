@@ -40,9 +40,20 @@ public class ProducerService {
     }
 
     public Producer update(Long id, Producer producer) {
-        producer.setId(id);
-        producer.setUpdatedAt(LocalDateTime.now());
-        return producerRepo.save(producer);
+        Producer existing = producerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
+
+        existing.setFullName(producer.getFullName());
+        existing.setDni(producer.getDni());
+        existing.setPhone(producer.getPhone());
+        existing.setEmail(producer.getEmail());
+        existing.setLocation(producer.getLocation());
+        existing.setDistrict(producer.getDistrict());
+        existing.setProvince(producer.getProvince());
+        existing.setRegion(producer.getRegion());
+        existing.setUpdatedAt(LocalDateTime.now());
+
+        return producerRepo.save(existing);
     }
 
     public Producer toggleActive(Long id) {
@@ -50,7 +61,29 @@ public class ProducerService {
                 .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
         p.setActive(!p.getActive());
         p.setUpdatedAt(LocalDateTime.now());
-        if (!p.getActive()) p.setDeletedAt(LocalDateTime.now());
+        if (!p.getActive()) {
+            p.setDeletedAt(LocalDateTime.now());
+        } else {
+            p.setRestoredAt(LocalDateTime.now());
+            p.setDeletedAt(null);
+        }
+        return producerRepo.save(p);
+    }
+
+    public Producer delete(Long id) {
+        Producer p = producerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
+        p.setActive(false);
+        p.setDeletedAt(LocalDateTime.now());
+        return producerRepo.save(p);
+    }
+
+    public Producer restore(Long id) {
+        Producer p = producerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
+        p.setActive(true);
+        p.setRestoredAt(LocalDateTime.now());
+        p.setDeletedAt(null);
         return producerRepo.save(p);
     }
 

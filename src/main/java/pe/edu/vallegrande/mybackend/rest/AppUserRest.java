@@ -84,6 +84,18 @@ public class AppUserRest {
         return ResponseEntity.ok(service.toggleActive(id));
     }
 
+    @PatchMapping("/v1/api/users/{id}/delete")
+    @Operation(summary = "US-08 — Logical delete user")
+    public ResponseEntity<AppUser> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(service.delete(id));
+    }
+
+    @PatchMapping("/v1/api/users/{id}/restore")
+    @Operation(summary = "US-08 — Restore user")
+    public ResponseEntity<AppUser> restore(@PathVariable Long id) {
+        return ResponseEntity.ok(service.restore(id));
+    }
+
     @PatchMapping("/v1/api/users/{id}/role")
     @Operation(summary = "US-08 — Change user role")
     public ResponseEntity<AppUser> changeRole(

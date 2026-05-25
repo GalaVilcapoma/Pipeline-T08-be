@@ -35,18 +35,22 @@ public class ProductoRest {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,desc") String sort) {
-        
-        // Configurar ordenamiento
-        String[] sortParams = sort.split(",");
-        Sort sortOrder = Sort.by(sortParams[0]);
-        if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
-            sortOrder = sortOrder.descending();
-        } else {
-            sortOrder = sortOrder.ascending();
-        }
-
-        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Pageable pageable = PageRequest.of(page, size, buildSortOrder(sort));
         Page<Producto> result = productoService.listarConFiltros(nombre, categoria, activo, pageable);
+        return ResponseEntity.ok(result);
+    }
+
+    // GET /v1/api/productos/all — Listado filtrado sin paginación
+    @GetMapping("/all")
+    @Operation(summary = "Listar todos los productos")
+    public ResponseEntity<List<Producto>> listarTodos(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) Boolean activo,
+            @RequestParam(defaultValue = "id,desc") String sort) {
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, buildSortOrder(sort));
+        List<Producto> result = productoService.listarConFiltros(nombre, categoria, activo, pageable)
+                .getContent();
         return ResponseEntity.ok(result);
     }
 
@@ -114,5 +118,16 @@ public class ProductoRest {
     @Operation(summary = "Obtener lista única de categorías de productos activos")
     public ResponseEntity<List<String>> getCategorias() {
         return ResponseEntity.ok(productoService.obtenerCategorias());
+    }
+
+    private Sort buildSortOrder(String sort) {
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(sortParams[0]);
+        if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
+            sortOrder = sortOrder.descending();
+        } else {
+            sortOrder = sortOrder.ascending();
+        }
+        return sortOrder;
     }
 }

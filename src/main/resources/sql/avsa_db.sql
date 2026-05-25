@@ -370,6 +370,55 @@ END
 GO
 
 -- ============================================================
+-- Table: ventas
+-- ============================================================
+IF OBJECT_ID('dbo.ventas', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.ventas (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        cliente_id BIGINT NOT NULL,
+        fecha DATETIME2 NOT NULL,
+        subtotal DECIMAL(12,2) NOT NULL,
+        total DECIMAL(12,2) NOT NULL,
+        created_at DATETIME2 NULL
+    );
+
+    ALTER TABLE dbo.ventas
+        ADD CONSTRAINT FK_ventas_cliente
+        FOREIGN KEY (cliente_id) REFERENCES dbo.customer(id);
+END
+GO
+CREATE INDEX IX_ventas_cliente_id ON dbo.ventas(cliente_id);
+GO
+
+-- ============================================================
+-- Table: venta_detalles
+-- ============================================================
+IF OBJECT_ID('dbo.venta_detalles', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.venta_detalles (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        venta_id BIGINT NOT NULL,
+        producto_id BIGINT NOT NULL,
+        cantidad INT NOT NULL,
+        precio_unitario DECIMAL(12,2) NOT NULL,
+        subtotal DECIMAL(12,2) NOT NULL
+    );
+
+    ALTER TABLE dbo.venta_detalles
+        ADD CONSTRAINT FK_venta_detalles_venta
+        FOREIGN KEY (venta_id) REFERENCES dbo.ventas(id);
+
+    ALTER TABLE dbo.venta_detalles
+        ADD CONSTRAINT FK_venta_detalles_producto
+        FOREIGN KEY (producto_id) REFERENCES dbo.productos(id);
+END
+GO
+CREATE INDEX IX_venta_detalles_venta_id ON dbo.venta_detalles(venta_id);
+CREATE INDEX IX_venta_detalles_producto_id ON dbo.venta_detalles(producto_id);
+GO
+
+-- ============================================================
 -- Table: productores
 -- ============================================================
 IF OBJECT_ID('dbo.productores', 'U') IS NULL

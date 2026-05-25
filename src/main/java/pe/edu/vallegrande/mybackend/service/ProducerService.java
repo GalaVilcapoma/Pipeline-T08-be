@@ -2,117 +2,31 @@ package pe.edu.vallegrande.mybackend.service;
 
 import pe.edu.vallegrande.mybackend.model.Field;
 import pe.edu.vallegrande.mybackend.model.Producer;
-import pe.edu.vallegrande.mybackend.repository.FieldRepository;
-import pe.edu.vallegrande.mybackend.repository.ProducerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * US-02: Gestión de productores y campos asociados
  */
-@Service
-public class ProducerService {
-
-    @Autowired private ProducerRepository producerRepo;
-    @Autowired private FieldRepository fieldRepo;
+public interface ProducerService {
 
     // ── Producers ──────────────────────────────────────────────────────────
-
-    public List<Producer> findAll() {
-        return producerRepo.findAll();
-    }
-
-    public List<Producer> findByActive(Boolean active) {
-        return producerRepo.findByActive(active);
-    }
-
-    public Optional<Producer> findById(Long id) {
-        return producerRepo.findById(id);
-    }
-
-    public Producer save(Producer producer) {
-        producer.setQrToken(UUID.randomUUID().toString());
-        return producerRepo.save(producer);
-    }
-
-    public Producer update(Long id, Producer producer) {
-        Producer existing = producerRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
-
-        existing.setFullName(producer.getFullName());
-        existing.setDni(producer.getDni());
-        existing.setPhone(producer.getPhone());
-        existing.setEmail(producer.getEmail());
-        existing.setLocation(producer.getLocation());
-        existing.setDistrict(producer.getDistrict());
-        existing.setProvince(producer.getProvince());
-        existing.setRegion(producer.getRegion());
-        existing.setUpdatedAt(LocalDateTime.now());
-
-        return producerRepo.save(existing);
-    }
-
-    public Producer toggleActive(Long id) {
-        Producer p = producerRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
-        p.setActive(!p.getActive());
-        p.setUpdatedAt(LocalDateTime.now());
-        if (!p.getActive()) {
-            p.setDeletedAt(LocalDateTime.now());
-        } else {
-            p.setRestoredAt(LocalDateTime.now());
-            p.setDeletedAt(null);
-        }
-        return producerRepo.save(p);
-    }
-
-    public Producer delete(Long id) {
-        Producer p = producerRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
-        p.setActive(false);
-        p.setDeletedAt(LocalDateTime.now());
-        return producerRepo.save(p);
-    }
-
-    public Producer restore(Long id) {
-        Producer p = producerRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producer not found: " + id));
-        p.setActive(true);
-        p.setRestoredAt(LocalDateTime.now());
-        p.setDeletedAt(null);
-        return producerRepo.save(p);
-    }
-
-    public List<Producer> findAllActive() {
-        return producerRepo.findAllActive();
-    }
+    List<Producer> findAll();
+    List<Producer> findByActive(Boolean active);
+    Optional<Producer> findById(Long id);
+    Producer save(Producer producer);
+    Producer update(Long id, Producer producer);
+    Producer toggleActive(Long id);
+    Producer delete(Long id);
+    Producer restore(Long id);
+    List<Producer> findAllActive();
 
     // ── Fields ─────────────────────────────────────────────────────────────
-
-    public List<Field> findFieldsByProducer(Long producerId) {
-        return fieldRepo.findByProducerId(producerId);
-    }
-
-    public Field saveField(Field field) {
-        field.setQrToken(UUID.randomUUID().toString());
-        return fieldRepo.save(field);
-    }
-
-    public Field updateField(Long id, Field field) {
-        field.setId(id);
-        return fieldRepo.save(field);
-    }
+    List<Field> findFieldsByProducer(Long producerId);
+    Field saveField(Field field);
+    Field updateField(Long id, Field field);
 
     // US-10: Find by QR token (public, no login required)
-    public Optional<Producer> findByQrToken(String token) {
-        return producerRepo.findByQrToken(token);
-    }
-
-    public Optional<Field> findFieldByQrToken(String token) {
-        return fieldRepo.findByQrToken(token);
-    }
+    Optional<Producer> findByQrToken(String token);
+    Optional<Field> findFieldByQrToken(String token);
 }

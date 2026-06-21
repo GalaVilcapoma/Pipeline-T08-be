@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
+		<tomcat.version>10.1.55</tomcat.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -59,7 +60,7 @@
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
-			<version>12.10.0.jre11</version>
+			<version>12.10.2.jre11</version>
 		</dependency>
 		<!-- 🔗✅ Reiniciar Automáticamente la Aplicación -->
 		<dependency>

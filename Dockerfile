@@ -2,8 +2,8 @@
 # Dockerfile — AVSA Backend (Spring Boot + Java 25)
 # ============================================================
 
-# ── Stage 1: Build con Maven Oficial (Infallible para Java 25) ──
-FROM maven:3.9.9-openjdk-25-slim AS builder
+# ── Stage 1: Build con Maven y Amazon Corretto 25 ───────────
+FROM maven:3.9.9-amazoncorretto-25 AS builder
 WORKDIR /app
 
 # Copiar pom.xml primero para aprovechar caché de capas
@@ -14,8 +14,8 @@ RUN mvn dependency:go-offline -q
 COPY src ./src
 RUN mvn clean package -DskipTests -q
 
-# ── Stage 2: Runtime con JRE 25 Oficial (Ligera y Estable) ──
-FROM openjdk:25-slim-bookworm
+# ── Stage 2: Runtime con Amazon Corretto 25 (Garantizada) ───
+FROM amazoncorretto:25-alpine
 WORKDIR /app
 
 # Copiar el JAR generado desde el Stage 1

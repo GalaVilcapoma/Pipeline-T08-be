@@ -1,5 +1,9 @@
-# ── Stage 1: Build con Maven (Imagen estándar garantizada) ──
-FROM maven:3.9.9-eclipse-temurin-25 AS builder
+# ============================================================
+# Dockerfile — AVSA Backend (Spring Boot + Java 25)
+# ============================================================
+
+# ── Stage 1: Build con Maven Oficial (Infallible para Java 25) ──
+FROM maven:3.9.9-openjdk-25-slim AS builder
 WORKDIR /app
 
 # Copiar pom.xml primero para aprovechar caché de capas
@@ -10,14 +14,14 @@ RUN mvn dependency:go-offline -q
 COPY src ./src
 RUN mvn clean package -DskipTests -q
 
-# ── Stage 2: Runtime con JRE 25 (Imagen estándar garantizada) ──
-FROM eclipse-temurin:25-jre
+# ── Stage 2: Runtime con JRE 25 Oficial (Ligera y Estable) ──
+FROM openjdk:25-slim-bookworm
 WORKDIR /app
 
-# Copiar el JAR generado
+# Copiar el JAR generado desde el Stage 1
 COPY --from=builder /app/target/*.jar app.jar
 
-# Puerto expuesto
+# Puerto expuesto configurado en tu proyecto
 EXPOSE 8085
 
 # Ejecutar la aplicación

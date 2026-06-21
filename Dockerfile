@@ -1,14 +1,5 @@
-# ============================================================
-# Dockerfile — AVSA Backend (Spring Boot + Java 17)
-# ============================================================
-# Usa imágenes oficiales de Docker Hub (no requiere cuenta propia)
-#
-# Construir:  docker build -t avsa-backend:1.0 .
-# Ejecutar:   docker run -p 8080:8080 avsa-backend:1.0
-# ============================================================
-
-# ── Stage 1: Build con Maven ─────────────────────────────────
-FROM maven:3.9.9-eclipse-temurin-25-alpine AS builder
+# ── Stage 1: Build con Maven (Imagen estándar garantizada) ──
+FROM maven:3.9.9-eclipse-temurin-25 AS builder
 WORKDIR /app
 
 # Copiar pom.xml primero para aprovechar caché de capas
@@ -19,8 +10,8 @@ RUN mvn dependency:go-offline -q
 COPY src ./src
 RUN mvn clean package -DskipTests -q
 
-# ── Stage 2: Runtime con JRE 17 ──────────────────────────────
-FROM eclipse-temurin:25-jre-alpine
+# ── Stage 2: Runtime con JRE 25 (Imagen estándar garantizada) ──
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 # Copiar el JAR generado
